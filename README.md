@@ -16,16 +16,15 @@ SMACK并不像看上去那样，只是由几部分组成的一套堆栈那么简
 
 * [快速部署](#快速部署)
 * [框架说明-业务](#框架说明-业务)
-* [框架说明-组件](#框架说明-组件)
-	* [SMACK核心](#smack核心)
-		* [引擎-Spark](#引擎-spark)
-		* [容器-Mesos](#容器-mesos)
-		* [模型-Akka](#模型-akka)
-		* [存储-Cassandra](#存储-cassandra)
-		* [消息队列-Kafka](#消息队列-kafka)
-		* [数据管道](#数据管道)
-	* [数据接入](#数据接入)
-	* [数据分析与监控](#数据分析与监控)
+* [框架说明-MACK核心](#smack核心)
+    * [引擎-Spark](#引擎-spark)
+    * [容器-Mesos](#容器-mesos)
+    * [模型-Akka](#模型-akka)
+    * [存储-Cassandra](#存储-cassandra)
+    * [消息队列-Kafka](#消息队列-kafka)
+    * [数据管道](#数据管道)
+* [框架说明-数据接入](#数据接入)
+* [框架说明-数据分析与监控](#数据分析与监控)
 * [如何变成自己的项目](#如何变成自己的项目)
 * [更新计划](#更新计划)
 * [社群贡献](#社群贡献)
@@ -36,11 +35,7 @@ SMACK并不像看上去那样，只是由几部分组成的一套堆栈那么简
 
 <div align=center><img width="900" height="" src="./image/business_architecture.png"/></div>
 
-# <a name="框架说明-组件"></a>框架说明-组件
-
-整体SMACK大数据框架可分为三部分：`SMACK核心`、`数据接入`、`数据分析与监控`
-
-## <a name="smack核心"></a>SMACK核心
+# <a name="smack核心"></a>框架说明-SMACK核心
 
 如前文所述，SMACK是由`Spark`、`Mesos`、`Akka`、`Cassandra`、`Kafka`组成的大数据架构，其中：
 
@@ -61,7 +56,7 @@ Spark是SMACK中最重要的部分，采用[Scala](https://www.scala-lang.org/)�
 
 **需要注意的是，Spark、Mesos、Akka、Cassandra、Kafka比较复杂，本项目不做详细解读，仅对基本要点进行介绍以便理解SMACK大数据架构，更多内容建议通过官方文档进行具体学习。**
 
-### <a name="引擎-spark"></a>引擎-Spark
+## <a name="引擎-spark"></a>引擎-Spark
 
 Spark基于内存设计，采用分布式计算Master-Slave模型，支持包括Scala、Java、Python在内的多种语言，提供Map Reduce操作、SQL查询、流数据、机器学习和图表数据处理等多种能力。Spark并不是要取代Hadoop，二是为管理不同性质大数据用例的统一框架。
 
@@ -81,7 +76,7 @@ Spark基于内存设计，采用分布式计算Master-Slave模型，支持包括
 
 **Read more [Apache Spark Official Documentation](https://spark.apache.org/docs/latest/)**
 
-### <a name="容器-mesos"></a>容器-Mesos
+## <a name="容器-mesos"></a>容器-Mesos
 
 集群管理平台Mesos是一种分布式操作系统内核，总体架构由Mesos-master、Mesos-slave（即Mesos-agent）、frameworks（即Mesos applications）及executor组成。
 
@@ -109,7 +104,7 @@ Spark基于内存设计，采用分布式计算Master-Slave模型，支持包括
 
 **Read more [Mesos Official Documentation](http://mesos.apache.org/documentation/latest/)**
 
-### <a name="模型-akka"></a>模型-Akka
+## <a name="模型-akka"></a>模型-Akka
 
 Akka是基于Actor模型的并发框架，能够在JVM上简化并行和分布式应用的构建，具有很强的扩展性，可以在系统内轻松创建数千个实例，也能够便捷的从单一节点进程扩展到一个集群的机器中，无需修改代码即可远程运行失败恢复和错误处理。简单来说，Akka是用来开发容错、分布式、并发应用的框架。
 
@@ -133,7 +128,7 @@ Actor是Akka的核心所在，指封装状态和行为的对象，通过交换�
 
 **Read more [Akka Offical Documentation](http://akka.io/docs/)**
 
-### <a name="存储-cassandra"></a>存储-Cassandra
+## <a name="存储-cassandra"></a>存储-Cassandra
 
 Cassandra是一个分布式的NoSQL数据库，它最大的特点就是完全去中心化，不像MySQL、MongoDB主从备份的模式，也不像HBase、HDFS有不同类型的节点。整个Cassandra集群就是一个由P2P协议组织起来的网络，消除了所有的单点故障。总体来说，Cassandra具备以下特点：
 
@@ -155,7 +150,7 @@ Cassandra是一个分布式的NoSQL数据库，它最大的特点就是完全去
 
 **Read more [Cassandra Official Documentation](http://cassandra.apache.org/doc/latest/)**
 
-### <a name="消息队列-kafka"></a>消息队列-Kafka
+## <a name="消息队列-kafka"></a>消息队列-Kafka
 
 Kafka是一款分布式消息系统（基于发布／订阅），因其水平可扩展性及高吞吐率而被广泛采用，具备以下特点：
 
@@ -173,7 +168,7 @@ Kafka是一款分布式消息系统（基于发布／订阅），因其水平可
 
 **Read more [Kafka Official Documentation](https://kafka.apache.org/documentation.html)**
 
-### <a name="数据管道"></a>数据管道 @ELVIS2002
+## <a name="数据管道"></a>数据管道 @ELVIS2002
 
 基于Spark Mesos Akka Cassandra Kafka这样的组合(SMACK），利用其成熟的技术去对应不同场景。更关键在于他们的易用和自由组合，自动化程度高。基于它构建一个平台，灵活性很难被击败。
 
@@ -189,9 +184,9 @@ Kafka是一款分布式消息系统（基于发布／订阅），因其水平可
 
 * Kafka and Cassandra
 
-## <a name="数据接入"></a>数据接入 @ELVIS2002
+# <a name="数据接入"></a>数据接入 @ELVIS2002
 
-## <a name="数据分析与监控"></a>数据分析与监控 @ELVIS2002
+# <a name="数据分析与监控"></a>数据分析与监控 @ELVIS2002
 
 # <a name="如何变成自己的项目"></a>如何变成自己的项目 @ELVIS2002
 
