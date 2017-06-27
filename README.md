@@ -100,7 +100,7 @@ Spark基于内存设计，采用分布式计算Master-Slave模型，支持包括
 
 **[Kubernetes on Mesos](https://kubernetes.io/docs/getting-started-guides/mesos/)**：Mesos允许Kubernetes动态分享集群资源，当Kubernetes运行在Mesos上（相当于一个Framework），你可以轻松将Kubernetes上运行的任务在任意云平台之间转移。
 
-**[Mesos Docker Containerizer](http://mesos.apache.org/documentation/latest/docker-containerizer/)**将Docker迁入Mesos集群可解决去烧故障监控、资源的调度、故障转移平台、缺少user-friendly管理界面和相对完整API、网络管理不够完善等Docker在生产环境中的部分不足。
+**[Mesos Docker Containerizer](http://mesos.apache.org/documentation/latest/docker-containerizer/)**：将Docker迁入Mesos集群可解决去烧故障监控、资源的调度、故障转移平台、缺少user-friendly管理界面和相对完整API、网络管理不够完善等Docker在生产环境中的部分不足。
 
 **Read more [Mesos Official Documentation](http://mesos.apache.org/documentation/latest/)**
 
