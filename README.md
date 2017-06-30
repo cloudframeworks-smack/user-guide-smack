@@ -15,8 +15,13 @@
 * [快速部署](#快速部署)
 * [框架说明-业务](#框架说明-业务)
 * [框架说明-SMACK核心](#smack核心)
+<<<<<<< HEAD
     * [引擎-Flink](#引擎-Flink)
     * [容器-Kubernetes](#容器-Kubernetes)
+=======
+    * [引擎-Spark](#引擎-spark)
+    * [容器-Mesos](#容器-mesos)
+>>>>>>> origin/master
     * [模型-Akka](#模型-akka)
     * [存储-Cassandra](#存储-cassandra)
     * [消息队列-Kafka](#消息队列-kafka)
@@ -91,7 +96,19 @@ Kubernetes是谷歌开源的自动化容器集群管理系统，在Docker基础�
 * kube-proxy用于单个work node服务的网络代理及负载均衡，实现kubernetes的service机制（TCP和UDP流转发）
 * kubectl与API service通讯的命令行工具，向master node发送命令
 
+<<<<<<< HEAD
 **Read more [Kubernetes Documentation](https://kubernetes.io/docs/home/)**
+=======
+**[Chronos](https://mesos.github.io/chronos/)**：Chronos是用于执行基于容器定时任务的Mesos框架。Chronos以[ISO 8601](https://en.wikipedia.org/wiki/ISO_8601)时间规范作为定时任务的执行时间配置，任务可选Docker或Mesos两种执行容器形式，支持重叠并发及任务依赖配置。
+
+**[Marathon](https://mesosphere.github.io/marathon/docs/)**:是用于执行长时间运行任务的Mesos框架，如web应用和服务等。Marathon可用于集群的多进程管理、为部署提供REST API服务、SSL与基础认证、配置约束、HAProxy、DNS实现服务发现和负载均衡、Health Check以及可定制化监控策略实现Task自动伸缩等。Marathon常与Mesos和Chronos一起运行，使Chronos可以在Mesos内部运行，并直接管理Chronos及长期运行的web应用和服务。
+
+**[Kubernetes on Mesos](https://kubernetes.io/docs/getting-started-guides/mesos/)**：Mesos允许Kubernetes动态分享集群资源，当Kubernetes运行在Mesos上（相当于一个Framework），你可以轻松将Kubernetes上运行的任务在任意云平台之间转移。
+
+**[Mesos Docker Containerizer](http://mesos.apache.org/documentation/latest/docker-containerizer/)**：将Docker迁入Mesos集群可解决去烧故障监控、资源的调度、故障转移平台、缺少user-friendly管理界面和相对完整API、网络管理不够完善等Docker在生产环境中的部分不足。
+
+**Read more [Mesos Official Documentation](http://mesos.apache.org/documentation/latest/)**
+>>>>>>> origin/master
 
 ## <a name="模型-akka"></a>模型-Akka
 
