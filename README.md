@@ -6,13 +6,17 @@
 
 跟硅谷大数据工程师谈笑风声？Spark、Storm、Pig、Hive……还是Hadoop？那些使用大数据技术的前沿公司会告诉你——**SMACK** is the new buzzword！并非一项单一技术，SMACK由Spark、Mesos、Akka、Cassandra、Kafka组成的大数据架构，适用于广泛的数据处理场景，可完成低延迟扩展及数据复制、统一管理异构负载集群，并通过单一平台满足不同架构设计和不同应用的需求。（[A Brief History of the SMACK Stack](https://chiefscientist.org/a-brief-history-of-the-smack-stack-f382547e91fe)）
 
-在面对数据源数量急剧增加、数据样本获取难度升高、数据分析时效性差、数据分析投资回报率低等一系列大数据带来的挑战时，SMACK可以解决Hadoop等我们熟知的大数据技术无法解决的诸多问题，特别是物联网化、API化趋势下big data向[fast data](http://www.infoworld.com/article/2608040/big-data/fast-data--the-next-step-after-big-data.html)转变所带来的一系列新需求。
+在面对数据源数量急剧增加、数据样本获取难度升高、数据分析时效性差、数据分析投资回报率低等一系列大数据带来的挑战时，SMACK可以解决Hadoop等我们熟知的大数据技术无法解决的诸多问题，特别是物联网化、API化趋势下big data向[fast data](http://www.infoworld.com/article/2608040/big-data/fast-data--the-next-step-after-big-data.html)转变所带来的一系列新需求，以及对于[Data Pipeline](http://www.toadworld.com/platforms/oracle/w/wiki/11576.modern-data-pipeline-architectures)的依赖。
 
-进一步讲，SMACK可以看作是一种广义上的框架组合思想，其中技术可以被更适合的技术替代，以更好的完成我们处理流式大数据的目标。本篇[云框架](README.md)即**使用Flink替代了Spark作为引擎层**，**使用Kubernetes替换Mesos作为容器层**，并以以海量网站数据为例，提供SMACK大数据框架的最佳实践，包括数据接入、SMACK核心、数据分析等一系列完整框架内容。
+进一步讲，SMACK可以看作是一种广义上的框架组合思想，其中技术可以增加或被更适合的技术替代，以更好的完成我们处理大数据的目标。本篇[云框架](README.md)为SMACK架构引擎层增加了**Flink用于处理实时数据**，**使用Kubernetes替换Mesos作为容器层**，并以海量网站数据为例，提供SMACK大数据框架的最佳实践，包括数据接入、SMACK核心、数据分析等一系列完整框架内容。
 
 # 内容概览
 
 * [快速部署](#快速部署)
+* [背景说明](#背景说明)
+    * [关于Fast Data](#fast-data)
+    * [关于Data Pipeline](#data-pipeline)
+    * [关于Lambda Architecture](#lambda-architecture)  
 * [框架说明-业务](#框架说明-业务)
 * [框架说明-SMACK核心](#smack核心)
     * [引擎-Flink](#引擎-Flink)
@@ -27,9 +31,49 @@
 * [更新计划](#更新计划)
 * [社群贡献](#社群贡献)
 
-# <a name="快速部署"></a>快速部署 @ELVIS2002
+# <a name="快速部署"></a>快速部署
 
-# <a name="框架说明-业务"></a>框架说明-业务 @ELVIS2002
+# <a name="背景说明"></a>背景说明
+
+## <a name="fast-data"></a>关于Fast Data
+
+客观来说，我们需要数据分析，但业务不一定真的会产生“足够大量”的数据，我们更需要的是快速的数据，即Fast Data，以便拉近与客户之间的距离、快速响应客户需求并为客户提供个性化的产品和服务。而Fast Data的核心在于，让正确的信息在正确的时间通过正确的设备传递给正确的人。
+
+Fast Data应用需要满足以下三点——
+
+* 快速摄入（fast ingestion）：摄取的目的在于获取数据源接口，以便进行更改并统一输入数据，分为直接摄入（direct ingestion，系统模块直接hook API generation，优点是简单，缺点是不灵活）和消息队列（message queue，通过broker访问数据生成API，优点是可以分区、复制、排序、根据组件压力管理pipeline）。
+* 流分析（analysis streaming）：大量fast data导致流分析从后端转移到了流层，流分析能力对于实时处理非常重要
+* 逐个事件处理（per event transaction）：实时的逐个事件处理显然会产生很大价值，首先可节省将数据存储在磁盘上的成本，其次可以帮助业务实时作出决策（如何在pre event transcation上提取并获取价值也已成为现代大数据工程师的一大挑战，目前较为流行的是通过机器学习工具处理流数据）
+
+## <a name="data-pipeline"></a>关于Data Pipeline
+
+数据的传递包括多个步骤，从复制数据到将数据从现有位置传递到云端，从重新格式化数据到数据源之间的联通，过去这些步骤常需要不同工具来完成。而Data Pipeline则是这些步骤自动化的总和，保证这些步骤可以可靠的应用于所有数据。
+
+Data Pipeline遵循的策略和原则如下——
+
+* **异步消息传递（asynchronous message passing）**：Actor向进程（或actor）发送消息，并依赖进程和支持系统来选择并调用代码运行（Akka、Kafka、Spark相关）* **[一致性算法](https://en.wikipedia.org/wiki/Consensus_algorithm)及[gossip protocol](https://en.wikipedia.org/wiki/Gossip_protocol)（consensus and gossip）**：（Akka、Cassandra相关）* **数据局部性（data locality）**：分为temporal（时间序，短时间内数据复用）和Spatial（空间序，在相近存储位置使用数据）（Cassandra、Kafka相关）* **故障探测（failure detection）**：Kafka中consumer注册成功后，coordinator将consumer添加到ping request scheduler的队列中，并尝试跟踪consumer是否仍然存在；Cassandra在本地确定node是up或down状态，本根据信息协调client访问；在Akka和Spark中使用网络变量相关的三个spark属性（`spark.akka.heartbeat.pauses`、`spark.akka.failure-detector.threshold`、`spark.akka.heartbeat.interval`）进行故障检测。（Cassandra、Spark、Akka、Kafka相关）* **容错／无单节点故障（fault tolerance／no single point of failure）**：（Spark、Cassandra、Kafka相关）* **隔离（isolation）**：（Spark、Cassandra、Kafka相关）* **位置透明（location transparency）**：Spark、Cassandra、Kafka中，位置透明允许读写集群中的任何节点，而系统将读写信息复制到整个集群；在Akka中，actor的mailing address可以是路由位置，此位置对于开发者而言是透明的。（Akka、Spark、Cassandra、Kafka相关）* **并行化（paralleism）**：Kafka分区并行；Cassandra数据并行；Spark和Akka任务并行；（Kafaka、Cassandra、Spark、Akka相关）* **扩展分区（partition for scale）**：SMACK技术是网络拓扑感知的（Cassandra、Spark、Kafka、Akka相关）* **故障点重播（replay for any point of failure）**：Spark中通过checkpointing实现，Kafka和Cassandra通过ZooKeeper实现，而Akka通过Akka persistence实现。（Spark、Cassandra、Kafka、Akka相关）* **复制弹性（replicate for resiliency）**：Kafka通过调整服务器数量复制每个分区内的日志，集群内服务器发生故障时自动转移副本；Cassandra将副本存储在多个节点上以保障可靠性和容错；Spark通过HDFS实现；（Spark、Cassandra、Kafka相关）* **可扩展的基础设施（Scalable infrastructure）**：（Spark、Cassandra、Kafka相关）* **无共享架构（share nothing／masterless）**：节点独立（Cassandra、Akka相关）* **Dynamo系统原则（Dynamo systems principles）**：Dynamo系统是一组技术，用来获得高可用性的键值分布式数据存储或结构化存储系，具有增量可扩展（incremental scalability）和对称性（symmetry）的特点。
+
+## <a name="lambda-architecture"></a>关于Lambda Architecture
+
+想要建立强大可扩展的大数据系统，需要遵循Lambda Architecture的架构原则，服从`query = function(all data)`公式。
+
+Lambda Architecutre原则包括——
+
+* **人为容错性（human fault-tolerance）** ：系统易数据丢失或数据损坏，大规模时可能是不可挽回的。
+
+* **数据不可变性（data immutability）** ：数据存储在它的最原始的形式不变的，永久的。
+
+* **重新计算（recomputation）** ：因为上面两个原则，运行函数重新计算结果是可能的。
+
+其架构层次示例如下：
+
+<div align=center><img width="900" height="" src="./image/lambda-architecture.png"/></div>
+
+* **批处理层（Batch Layer）**：批处理工具
+* **服务层（Serving Layer）**：用于加载和现实数据库中的批处理视图，以便用户能够查询，不一定需要随机写，但是支持批更新和随机读
+* **速度层（Speed Layer）**：处理新数据和服务层更新造成的高延迟补偿，利用流处理系统和随机read/write数据存储库来计算实时视图(HBase)
+
+# <a name="框架说明-业务"></a>框架说明-业务
 
 <div align=center><img width="900" height="" src="./image/business-architecture.png"/></div>
 
@@ -43,7 +87,35 @@
 
 **需要注意的是，Flink、Kubernetes、Akka、Cassandra、Kafka比较复杂，本项目不做详细解读，仅对基本要点进行介绍以便理解SMACK大数据架构，更多内容建议通过官方文档进行具体学习。**
 
+# 引擎-Spark
+
+**此处使用Spark处理“Pull型”数据，即client可查询历史数据，如历史某一时段web访问量等**
+
+[Difference between Spark and Flink](https://stackoverflow.com/questions/28082581/what-is-the-difference-between-apache-spark-and-apache-flink)
+
+Spark基于内存设计，采用分布式计算Master-Slave模型，支持包括Scala、Java、Python在内的多种语言，提供Map Reduce操作、SQL查询、流数据、机器学习和图表数据处理等多种能力。Spark并不是要取代Hadoop，二是为管理不同性质大数据用例的统一框架。
+
+完整的Spark架构生态由Spark Core（核心API）及Spark SQL、Spark Streaming、Spark MLib、Spark Graphx等附加库构成。
+
+<div align=center><img width="900" height="" src="./image/spark-framework.png"/></div>
+
+**Spark Core**：Spark Core是大规模并行和分布式数据处理的基础引擎（Spark项目基础），负责内存管理和故障恢复、调度分发监控集群作业、与存储系统进行交互等。Spark采用RDD基础数据结构，可通过在外部存储系统中引用数据集（[Actions](http://spark.apache.org/docs/1.2.1/programming-guide.html#actions)）或通过在现有RDD转换（map、filter、reducer、join等）来创建（[Transformations](http://spark.apache.org/docs/1.2.1/programming-guide.html#transformations)）。
+
+**Spark SQL**：Spark SQL通过JDBC API暴露Spark数据集，支持传统BI和可视化工具在Spark数据上执行SQL查询，同时对不同格式数据（JSON、Parquet、数据库等）执行ETL病暴露给特定查询。
+
+**Spark Streaming**：Spark Streaming以微批量的方式计算和处理实时数据流，它使用DStream，简单来说就是一个弹性分布式数据集（RDD）系列，处理实时数据。
+
+**Spark MLib**：Spark MLib（Machine Learning Library）是Spark可扩展的机器学习库，由二元分类、线性回归、聚类、协同过滤、梯度下降以及底层优化原语通用的学习算法和工具组成。
+
+**Spark GraphX**：GraphX是用于图计算和并行图计算的Spark API，通过弹性分布式属性图（Resilient Distributed Property Graph）扩展Spark RDD。GraphX通过暴露基础操作符集合（如subgraph，joinVertices和aggregateMessages）和经过优化的Pregel API变体以支持图计算，并提供简化图分析任务的图算法和构建器集合。
+
+**Read more [Apache Spark Official Documentation](https://spark.apache.org/docs/latest/)**
+
 ## <a name="引擎-Flink"></a>引擎-Flink
+
+**此处使用Flink处理“push型”数据，即实时将数据推送给client**
+
+[Difference between Spark and Flink](https://stackoverflow.com/questions/28082581/what-is-the-difference-between-apache-spark-and-apache-flink)
 
 Flink是针对流数据和批数据（流数据的一种极限特例）的分布式处理引擎，采用Java编写，支持Scala、Java、Python的API。Flink的最大特点在于将所有任务当作“流”来处理，支持快速本地迭代及环形迭代任务。相比Spark，Flink并没有将内存完全交给应用层，由此降低了out of memory的发生（Spark在1.5版本后所有DataFrame操作直接作用于[Tungsten](https://community.hortonworks.com/articles/72502/what-is-tungsten-for-apache-spark.html)的二进制数据上）。
 
