@@ -354,9 +354,24 @@ Grafana：整合InfluxDb进行数据展示
 
 `TODO`
 
-# <a name="数据分析与监控"></a>数据分析与监控
+# <a name="数据展示"></a>数据展示
 
-`TODO`
+1、打开http://127.0.0.1:3000/login，输入admin／admin
+
+2、<div align=center><img width="900" height="" src="./image/1.png"/></div>
+
+3、<div align=center><img width="900" height="" src="./image/2.png"/></div>
+
+4、<div align=center><img width="900" height="" src="./image/3.png"/></div>
+
+5、<div align=center><img width="900" height="" src="./image/4.png"/></div>
+
+6、<div align=center><img width="900" height="" src="./image/5.png"/></div>
+
+7、<div align=center><img width="900" height="" src="./image/6.png"/></div>
+
+8、influxdb中有status_real_statics、request_real_statics、nginx_log 表,可以分别创建它们视图
+
 
 # <a name="更新计划"></a>更新计划
 
