@@ -318,12 +318,19 @@ Data Pipeline即分布式系统里的数据管道，在大型互联网后端基�
     
 
 File System：nginx日志路径
+
 Akka-Http：数据增强、数据再处理、restful api接口
+
 Kafka：消息队列
+
 Flink：消息流式处理
+
 Cassandra：数据持久化
+
 Spark：历史数据批处理
+
 InfluxDb：实时数据统计后汇总地方（可以换其它组件）
+
 Grafana：整合InfluxDb进行数据展示
 
 
