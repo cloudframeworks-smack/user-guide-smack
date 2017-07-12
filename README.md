@@ -54,22 +54,7 @@ Fast Data的核心在于“**让正确的信息在正确的时间通过正确的
 
 Data Pipeline遵循的策略和原则如下——
 
-| 策略和原则 | 相关技术 | 解释 |
-| --- | --- | --- |
-| 异步消息传递（asynchronous message passing） | Akka、Kafka、Spark | Actor向进程（或actor）发送消息，并依赖进程和支持系统来选择并调用代码运行 |
-| [一致性算法](https://en.wikipedia.org/wiki/Consensus_algorithm)及[gossip protocol](https://en.wikipedia.org/wiki/Gossip_protocol)（consensus and gossip） | Akka、Cassandra |  |
-| 数据局部性（data locality） | Cassandra、Kafka | 分为temporal（时间序，短时间内数据复用）和Spatial（空间序，在相近存储位置使用数据） |
-| 故障探测（failure detection） | Cassandra、Spark、Akka、Kafka | Kafka中consumer注册成功后，coordinator将consumer添加到ping request scheduler的队列中，并尝试跟踪consumer是否仍然存在；Cassandra在本地确定node是up或down状态，本根据信息协调client访问；在Akka和Spark中使用网络变量相关的三个spark属性（`spark.akka.heartbeat.pauses`、`spark.akka.failure-detector.threshold`、`spark.akka.heartbeat.interval`）进行故障检测 |
-| 容错／无单节点故障（fault tolerance／no single point of failure） | Spark、Cassandra、Kafka |  |
-| 隔离（isolation） | Spark、Cassandra、Kafka |  |
-| 位置透明（location transparency） | Akka、Spark、Cassandra、Kafka | Spark、Cassandra、Kafka中，位置透明允许读写集群中的任何节点，而系统将读写信息复制到整个集群；在Akka中，actor的mailing address可以是路由位置，此位置对于开发者而言是透明的 |
-| 并行化（paralleism） | Kafaka、Cassandra、Spark、Akka | Kafka分区并行；Cassandra数据并行；Spark和Akka任务并行； |
-| 扩展分区（partition for scale） | Cassandra、Spark、Kafka、Akka | SMACK技术是网络拓扑感知的 |
-| 故障点重播（replay for any point of failure） | Spark、Cassandra、Kafka、Akka | Spark中通过checkpointing实现，Kafka和Cassandra通过ZooKeeper实现，而Akka通过Akka persistence实现 |
-| 复制弹性（replicate for resiliency） | Spark、Cassandra、Kafka | Kafka通过调整服务器数量复制每个分区内的日志，集群内服务器发生故障时自动转移副本；Cassandra将副本存储在多个节点上以保障可靠性和容错；Spark通过HDFS实现； |
-| 可扩展的基础设施（Scalable infrastructure） | Spark、Cassandra、Kafka |  |
-| 无共享架构（share nothing／masterless） | Cassandra、Akka | 节点独立 |
-| Dynamo系统原则（Dynamo systems principles） |  | Dynamo系统是一组技术，用来获得高可用性的键值分布式数据存储或结构化存储系，具有增量可扩展（incremental scalability）和对称性（symmetry）的特点 |
+* **异步消息传递（asynchronous message passing）**：Actor向进程（或actor）发送消息，并依赖进程和支持系统来选择并调用代码运行（Akka、Kafka、Spark相关）* **[一致性算法](https://en.wikipedia.org/wiki/Consensus_algorithm)及[gossip protocol](https://en.wikipedia.org/wiki/Gossip_protocol)（consensus and gossip）**：（Akka、Cassandra相关）* **数据局部性（data locality）**：分为temporal（时间序，短时间内数据复用）和Spatial（空间序，在相近存储位置使用数据）（Cassandra、Kafka相关）* **故障探测（failure detection）**：Kafka中consumer注册成功后，coordinator将consumer添加到ping request scheduler的队列中，并尝试跟踪consumer是否仍然存在；Cassandra在本地确定node是up或down状态，本根据信息协调client访问；在Akka和Spark中使用网络变量相关的三个spark属性（`spark.akka.heartbeat.pauses`、`spark.akka.failure-detector.threshold`、`spark.akka.heartbeat.interval`）进行故障检测。（Cassandra、Spark、Akka、Kafka相关）* **容错／无单节点故障（fault tolerance／no single point of failure）**：（Spark、Cassandra、Kafka相关）* **隔离（isolation）**：（Spark、Cassandra、Kafka相关）* **位置透明（location transparency）**：Spark、Cassandra、Kafka中，位置透明允许读写集群中的任何节点，而系统将读写信息复制到整个集群；在Akka中，actor的mailing address可以是路由位置，此位置对于开发者而言是透明的。（Akka、Spark、Cassandra、Kafka相关）* **并行化（paralleism）**：Kafka分区并行；Cassandra数据并行；Spark和Akka任务并行；（Kafaka、Cassandra、Spark、Akka相关）* **扩展分区（partition for scale）**：SMACK技术是网络拓扑感知的（Cassandra、Spark、Kafka、Akka相关）* **故障点重播（replay for any point of failure）**：Spark中通过checkpointing实现，Kafka和Cassandra通过ZooKeeper实现，而Akka通过Akka persistence实现。（Spark、Cassandra、Kafka、Akka相关）* **复制弹性（replicate for resiliency）**：Kafka通过调整服务器数量复制每个分区内的日志，集群内服务器发生故障时自动转移副本；Cassandra将副本存储在多个节点上以保障可靠性和容错；Spark通过HDFS实现；（Spark、Cassandra、Kafka相关）* **可扩展的基础设施（Scalable infrastructure）**：（Spark、Cassandra、Kafka相关）* **无共享架构（share nothing／masterless）**：节点独立（Cassandra、Akka相关）* **Dynamo系统原则（Dynamo systems principles）**：Dynamo系统是一组技术，用来获得高可用性的键值分布式数据存储或结构化存储系，具有增量可扩展（incremental scalability）和对称性（symmetry）的特点。
 
 ## <a name="lambda-architecture"></a>关于Lambda Architecture
 
