@@ -19,8 +19,9 @@
     * [关于Lambda Architecture](#lambda-architecture)  
 * [框架说明-业务](#框架说明-业务)
 * [框架说明-SMACK核心](#smack核心)
-    * [引擎-Flink](#引擎-Flink)
-    * [容器-Kubernetes](#容器-Kubernetes)
+    * [引擎-Spark](#引擎-spark)
+    * [引擎-Flink](#引擎-flink)
+    * [容器-Kubernetes](#容器-kubernetes)
     * [模型-Akka](#模型-akka)
     * [存储-Cassandra](#存储-cassandra)
     * [消息队列-Kafka](#消息队列-kafka)
@@ -87,7 +88,7 @@ Lambda Architecutre原则包括——
 
 **需要注意的是，Flink、Kubernetes、Akka、Cassandra、Kafka比较复杂，本项目不做详细解读，仅对基本要点进行介绍以便理解SMACK大数据架构，更多内容建议通过官方文档进行具体学习。**
 
-# 引擎-Spark
+# <a name="引擎-spark"></a>引擎-Spark
 
 **此处使用Spark处理“Pull型”数据，即client可查询历史数据，如历史某一时段web访问量等**
 
@@ -111,7 +112,7 @@ Spark基于内存设计，采用分布式计算Master-Slave模型，支持包括
 
 **Read more [Apache Spark Official Documentation](https://spark.apache.org/docs/latest/)**
 
-## <a name="引擎-Flink"></a>引擎-Flink
+## <a name="引擎-flink"></a>引擎-Flink
 
 **此处使用Flink处理“push型”数据，即实时将数据推送给client**
 
@@ -143,7 +144,7 @@ Flink具备以下特性：
 
 **Read more [Apache Flink Documentation](https://ci.apache.org/projects/flink/flink-docs-release-1.3/)**
 
-## <a name="容器-Kubernetes"></a>容器-Kubernetes
+## <a name="容器-kubernetes"></a>容器-Kubernetes
 
 Kubernetes是谷歌开源的自动化容器集群管理系统，在Docker基础上为容器化应用提供部署运行、资源调度、服务发现和弹性伸缩等功能特性，无需用户进行复杂的设置工作。轻量、易用、可拓展、自修复是Kubernetes的主要特点，也使得Kubernetes成为目前最为流行的容器编排工具，其架构如下：
 
