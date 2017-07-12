@@ -53,7 +53,20 @@ Fast Data的核心在于“**让正确的信息在正确的时间通过正确的
 
 Data Pipeline遵循的策略和原则如下——
 
-* **异步消息传递（asynchronous message passing）**：Actor向进程（或actor）发送消息，并依赖进程和支持系统来选择并调用代码运行（Akka、Kafka、Spark相关）* **[一致性算法](https://en.wikipedia.org/wiki/Consensus_algorithm)及[gossip protocol](https://en.wikipedia.org/wiki/Gossip_protocol)（consensus and gossip）**：（Akka、Cassandra相关）* **数据局部性（data locality）**：分为temporal（时间序，短时间内数据复用）和Spatial（空间序，在相近存储位置使用数据）（Cassandra、Kafka相关）* **故障探测（failure detection）**：Kafka中consumer注册成功后，coordinator将consumer添加到ping request scheduler的队列中，并尝试跟踪consumer是否仍然存在；Cassandra在本地确定node是up或down状态，本根据信息协调client访问；在Akka和Spark中使用网络变量相关的三个spark属性（`spark.akka.heartbeat.pauses`、`spark.akka.failure-detector.threshold`、`spark.akka.heartbeat.interval`）进行故障检测。（Cassandra、Spark、Akka、Kafka相关）* **容错／无单节点故障（fault tolerance／no single point of failure）**：（Spark、Cassandra、Kafka相关）* **隔离（isolation）**：（Spark、Cassandra、Kafka相关）* **位置透明（location transparency）**：Spark、Cassandra、Kafka中，位置透明允许读写集群中的任何节点，而系统将读写信息复制到整个集群；在Akka中，actor的mailing address可以是路由位置，此位置对于开发者而言是透明的。（Akka、Spark、Cassandra、Kafka相关）* **并行化（paralleism）**：Kafka分区并行；Cassandra数据并行；Spark和Akka任务并行；（Kafaka、Cassandra、Spark、Akka相关）* **扩展分区（partition for scale）**：SMACK技术是网络拓扑感知的（Cassandra、Spark、Kafka、Akka相关）* **故障点重播（replay for any point of failure）**：Spark中通过checkpointing实现，Kafka和Cassandra通过ZooKeeper实现，而Akka通过Akka persistence实现。（Spark、Cassandra、Kafka、Akka相关）* **复制弹性（replicate for resiliency）**：Kafka通过调整服务器数量复制每个分区内的日志，集群内服务器发生故障时自动转移副本；Cassandra将副本存储在多个节点上以保障可靠性和容错；Spark通过HDFS实现；（Spark、Cassandra、Kafka相关）* **可扩展的基础设施（Scalable infrastructure）**：（Spark、Cassandra、Kafka相关）* **无共享架构（share nothing／masterless）**：节点独立（Cassandra、Akka相关）* **Dynamo系统原则（Dynamo systems principles）**：Dynamo系统是一组技术，用来获得高可用性的键值分布式数据存储或结构化存储系，具有增量可扩展（incremental scalability）和对称性（symmetry）的特点。
+* **异步消息传递（asynchronous message passing）**：Actor向进程（或actor）发送消息，并依赖进程和支持系统来选择并调用代码运行（Akka、Kafka、Spark相关）
+* **[一致性算法](https://en.wikipedia.org/wiki/Consensus_algorithm)及[gossip protocol](https://en.wikipedia.org/wiki/Gossip_protocol)（consensus and gossip）**：（Akka、Cassandra相关）
+* **数据局部性（data locality）**：分为temporal（时间序，短时间内数据复用）和Spatial（空间序，在相近存储位置使用数据）（Cassandra、Kafka相关）
+* **故障探测（failure detection）**：Kafka中consumer注册成功后，coordinator将consumer添加到ping request scheduler的队列中，并尝试跟踪consumer是否仍然存在；Cassandra在本地确定node是up或down状态，本根据信息协调client访问；在Akka和Spark中使用网络变量相关的三个spark属性（`spark.akka.heartbeat.pauses`、`spark.akka.failure-detector.threshold`、`spark.akka.heartbeat.interval`）进行故障检测。（Cassandra、Spark、Akka、Kafka相关）
+* **容错／无单节点故障（fault tolerance／no single point of failure）**：（Spark、Cassandra、Kafka相关）
+* **隔离（isolation）**：（Spark、Cassandra、Kafka相关）
+* **位置透明（location transparency）**：Spark、Cassandra、Kafka中，位置透明允许读写集群中的任何节点，而系统将读写信息复制到整个集群；在Akka中，actor的mailing address可以是路由位置，此位置对于开发者而言是透明的。（Akka、Spark、Cassandra、Kafka相关）
+* **并行化（paralleism）**：Kafka分区并行；Cassandra数据并行；Spark和Akka任务并行；（Kafaka、Cassandra、Spark、Akka相关）
+* **扩展分区（partition for scale）**：SMACK技术是网络拓扑感知的（Cassandra、Spark、Kafka、Akka相关）
+* **故障点重播（replay for any point of failure）**：Spark中通过checkpointing实现，Kafka和Cassandra通过ZooKeeper实现，而Akka通过Akka persistence实现。（Spark、Cassandra、Kafka、Akka相关）
+* **复制弹性（replicate for resiliency）**：Kafka通过调整服务器数量复制每个分区内的日志，集群内服务器发生故障时自动转移副本；Cassandra将副本存储在多个节点上以保障可靠性和容错；Spark通过HDFS实现；（Spark、Cassandra、Kafka相关）
+* **可扩展的基础设施（Scalable infrastructure）**：（Spark、Cassandra、Kafka相关）
+* **无共享架构（share nothing／masterless）**：节点独立（Cassandra、Akka相关）
+* **Dynamo系统原则（Dynamo systems principles）**：Dynamo系统是一组技术，用来获得高可用性的键值分布式数据存储或结构化存储系，具有增量可扩展（incremental scalability）和对称性（symmetry）的特点。
 
 ## <a name="lambda-architecture"></a>关于Lambda Architecture
 
@@ -236,13 +249,79 @@ Data Pipeline即分布式系统里的数据管道，在大型互联网后端基�
 
 本项目Data Pipeline整体结构如下：
 
-<div align=center><img width="900" height="" src="./image/smack-data-pipeline.png"/></div>
+<div align=center><img width="900" height="" src="./image/smack-pipeline.png"/></div>
 
 * Spark and Cassandra
 * Akka and Kafka
 * Akka and Cassandra
 * Akka and Spark
 * Kafka and Cassandra
+
+
+# <a name="业务案例"></a>业务案例
+
+   本案例将介绍如何使用smack框架去分析某网站nginx访问日志，主要功能包括
+   
+   1、某个应用在过去15s中每个请求的请求数、平均相应时间
+   
+   2、某个应用在过去15s中访问状态（4xx、5xx、3xx）出现的频率
+   
+   3、某个应用在过去某个时间段中被访问的PV，可以天、小时、分钟统计
+   
+   4、某个应用在过去某个时间段中被访问的UV（以IP地址唯一性判断），可以天、小时、分钟统计
+   
+   5、某个应用在过去某个时间段中请求总个数、总时间、最大相应时间、最小相应时间，可以天、小时、分钟统计
+
+# <a name="处理架构图"></a>处理架构图
+
+<div align=center><img width="900" height="" src="./image/user-case.png"/></div>
+    
+
+File System：nginx日志路径
+Akka-Http：数据增强、数据再处理、restful api接口
+Kafka：消息队列
+Flink：消息流式处理
+Cassandra：数据持久化
+Spark：历史数据批处理
+InfluxDb：实时数据统计后汇总地方（可以换其它组件）
+Grafana：整合InfluxDb进行数据展示
+
+
+# <a name="业务日志格式"></a>业务日志格式
+
+    172.10.36.32 - - [08/Jun/2017:16:36:46 +0800] "GET /winprize/index?id=aafe-uuawef--afewa HTTP/1.1" 200 2215 "-" "-" "172.11.161.17, 172.10.226.13, 10.208.26.230" 938 0.004 172.11.6.9:10055
+    172.10.36.62 - - [08/Jun/2017:16:37:43 +0800] "GET /index HTTP/1.1" 200 56 "-" "-" "172.11.137.181, 172.10.226.14, 10.208.26.226" 947 0.001 172.11.30.144:10055
+    172.10.37.46 - - [08/Jun/2017:16:37:43 +0800] "GET /prize/index HTTP/1.1" 200 56 "-" "-" "172.11.97.82, 172.10.226.11, 10.208.26.234" 952 0.001 172.11.6.9:10055
+    172.10.36.46 - - [08/Jun/2017:16:37:43 +0800] "GET /prize/rank?r=latest HTTP/1.1" 200 54 "-" "-" "172.11.152.137, 172.10.230.13, 10.208.26.241" 1208 0.001 172.11.9.81:10055
+    172.10.37.46 - - [08/Jun/2017:16:36:44 +0800] "GET /prize/rank?r=latest HTTP/1.1" 200 2221 "-" "-" "172.11.97.56, 172.10.226.11, 10.208.26.228" 955 0.003 172.11.14.209:10055
+    172.10.36.67 - - [08/Jun/2017:16:36:44 +0800] "GET /index HTTP/1.1" 500 2299 "-" "-" "172.11.152.140, 172.10.230.191, 10.208.26.243" 1024 0.003 172.11.2.194:10055
+    172.10.36.32 - - [08/Jun/2017:16:36:46 +0800] "GET /winprize/index?id=aafe-uuawef--afewaaa HTTP/1.1" 404 56 "-" "-" "172.11.161.17, 172.10.230.12, 10.208.26.241" 997 0.001 172.11.23.140:10055
+    172.10.36.32 - - [08/Jun/2017:16:37:43 +0800] "GET /prize/index HTTP/1.1" 200 56 "-" "-" "172.10.36.34, 172.10.226.13, 10.208.26.235" 946 0.002 172.11.2.194:10055
+    172.10.36.32 - - [08/Jun/2017:16:36:47 +0800] "GET /prize/index HTTP/1.1" 200 56 "-" "-" "172.11.97.88, 172.10.226.13, 10.208.26.229" 1294 0.002 172.11.23.140:10055
+    
+
+<a name="业务日志格式" href="example/log.log"> example</a>
+
+
+# <a name="服务访问"></a>服务访问 以table方式展示
+
+最新10条日志：http://DOCKER_HOST:9091/msg/data/nginx_log/test/test/1/10
+
+最新状态统计信息：http://DOCKER_HOST:9091/msg/data/status_real_statics/test/test/1/10
+
+最新请求统计信息：http://DOCKER_HOST:9091/msg/data/request_real_statics/test/test/1/10
+
+历史统计信息：http://127.0.0.1:9090/msg/push/statics
+参数：
+namespace:test
+serviceName:test
+start_time:2017-06-01 01:00:18
+end_time:2017-07-22 01:25:10
+cmd:uv|pv|avgtime
+time_type:day|hour|minute
+请求方式：Post
+
+
 
 # <a name="数据接入"></a>数据接入
 
