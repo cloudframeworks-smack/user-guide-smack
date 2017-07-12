@@ -56,13 +56,21 @@
     最新请求统计信息：http://DOCKER_HOST:9091/msg/data/request_real_statics/test/test/1/10
     
     历史统计信息：http://127.0.0.1:9090/msg/push/statics
+    
     参数：
+    
     namespace:test
+    
     serviceName:test
+    
     start_time:2017-06-01 01:00:18
+    
     end_time:2017-07-22 01:25:10
+    
     cmd:uv|pv|avgtime
+    
     time_type:day|hour|minute
+    
     请求方式：Post
 
 # <a name="背景说明"></a>背景说明
