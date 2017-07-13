@@ -4,7 +4,7 @@ Spark基于内存设计，采用分布式计算Master-Slave模型，支持包括
 
 完整的Spark架构生态由Spark Core（核心API）及Spark SQL、Spark Streaming、Spark MLib、Spark Graphx等附加库构成。
 
-<div align=center><img width="900" height="" src="../image/spark_framework.png"/></div>
+<div align=center><img width="900" height="" src="../image/spark-framework.png"/></div>
 
 **Spark Core**：Spark Core是大规模并行和分布式数据处理的基础引擎（Spark项目基础），负责内存管理和故障恢复、调度分发监控集群作业、与存储系统进行交互等。Spark采用RDD基础数据结构，可通过在外部存储系统中引用数据集（[Actions](http://spark.apache.org/docs/1.2.1/programming-guide.html#actions)）或通过在现有RDD转换（map、filter、reducer、join等）来创建（[Transformations](http://spark.apache.org/docs/1.2.1/programming-guide.html#transformations)）。
 
