@@ -16,7 +16,9 @@ Fast Data的核心在于“**让正确的信息在正确的时间通过正确的
 
 ## <a name="data-pipeline"></a>关于Data Pipeline
 
-数据传递包括多个步骤，从复制数据到将数据从现有位置传递到云端，从重新格式化数据到数据源之间的联通。过去，这些步骤常需要不同工具来完成。而Data Pipeline则是这些步骤自动化的总和，保证这些步骤可以可靠的应用于所有数据。
+Data Pipeline即分布式系统里的数据管道，在大型互联网后端基础架构中扮演着举足轻重的角色。与早期的Sqoop、Flume不同的是，现代的Data Pipeline并非工具概念的技术，而是当作一个服务来运行，放在数据系统中去调度。服务化的Data Pipeline可以让原本复杂的数据传输工作变得优雅起来，这也是DevOps思想的一种延伸。
+
+数据传递包括多个步骤，从复制数据到将数据从现有位置传递到云端，从重新格式化数据到数据源之间的联通……过去，这些步骤常需要不同工具来完成。而Data Pipeline则是这些步骤自动化的总和，保证这些步骤可以可靠的应用于所有数据。
 
 Data Pipeline遵循的策略和原则如下——
 
@@ -34,6 +36,14 @@ Data Pipeline遵循的策略和原则如下——
 * **可扩展的基础设施（Scalable infrastructure）**：（Spark、Cassandra、Kafka相关）
 * **无共享架构（share nothing／masterless）**：节点独立（Cassandra、Akka相关）
 * **Dynamo系统原则（Dynamo systems principles）**：Dynamo系统是一组技术，用来获得高可用性的键值分布式数据存储或结构化存储系，具有增量可扩展（incremental scalability）和对称性（symmetry）的特点。
+
+在本项目中，主要包括如下Data Pipeline：
+
+* Spark and Cassandra
+* Akka and Kafka
+* Akka and Cassandra
+* Akka and Spark
+* Kafka and Cassandra
 
 ## <a name="lambda-architecture"></a>关于Lambda Architecture
 

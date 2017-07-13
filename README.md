@@ -41,28 +41,23 @@
 
 4. 访问路径
 
-| 访问 | 路径 |
-| --- | --- |
-| 最近10条日志 | http://DOCKER_HOST:9091/msg/data/nginx_log/test/test/1/10 |
-| 最新状态统计信息 | http://DOCKER_HOST:9091/msg/data/status_real_statics/test/test/1/10 |
-| 最新请求统计信息 | http://DOCKER_HOST:9091/msg/data/request_real_statics/test/test/1/10 |
-| 历史统计信息 | http://127.0.0.1:9090/msg/push/statics |
+    | 访问 | 路径 |
+    | --- | --- |
+    | 最近10条日志 | http://DOCKER_HOST:9091/msg/data/nginx_log/test/test/1/10 |
+    | 最新状态统计信息 | http://DOCKER_HOST:9091/msg/data/status_real_statics/test/test/1/10 |
+    | 最新请求统计信息 | http://DOCKER_HOST:9091/msg/data/request_real_statics/test/test/1/10 |
+    | 历史统计信息 | http://127.0.0.1:9090/msg/push/statics |
 
-**POST请求参数**
+5. POST请求参数
 
-```
-namespace:test
-    
-    serviceName:test
-    
-    start_time:2017-06-01 01:00:18
-    
-    end_time:2017-07-22 01:25:10
-    
-    cmd:uv|pv|avgtime
-    
-    time_type:day|hour|minute
-```
+    ```
+    namespace:test
+        serviceName:test
+        start_time:2017-06-01 01:00:18
+        end_time:2017-07-22 01:25:10
+        cmd:uv|pv|avgtime
+        time_type:day|hour|minute
+    ```
 
 # <a name="框架说明-业务"></a>框架说明-业务
 
@@ -85,7 +80,7 @@ namespace:test
 
 ## <a name="smack"></a>框架说明-SMACK
 
-本项目中SMACK用到了Spark、Flink、Kubernetes、Akka、Cassandra、Kafka，在技术成熟度、易用性、组合自由性、自动化程度上极具优势。对于数据的实时处理能力是该组合取代Hadoop的重要原因，在Spark基础上增加Flink而不是完全取代Spark的原因则是，Flink处理数据可达秒级（Spark为分钟级），但Spark在数据批处理成熟度上目前整体要强于Flink。
+本项目中SMACK用到了Spark、Flink、Kubernetes、Akka、Cassandra、Kafka，这一组合在技术成熟度、易用性、组合自由性、自动化程度上极具优势。对于数据的实时处理能力是该组合取代Hadoop的重要原因，在Spark基础上增加Flink而不是完全取代Spark的原因则是，Flink处理数据可达秒级（Spark为分钟级），但Spark在数据批处理成熟度上目前整体要强于Flink。
 
 | 组件 | 功能／任务 | 组件 | 功能／任务 |
 | --- | --- | --- | --- |
@@ -103,19 +98,9 @@ SMACK整体结构如下:
 * 数据通过Akka消息队列处理后，由Kafka执行消息传输
 * Flink利用窗口CP机制对数据进行流式处理及实时状态统计
 * 经过Flink处理的非统计信息将被存储至Cassandra
-* 经过Flink处理的统计信息将被存储至InfluxDB
+* 经过Flink处理的统计信息将被存储至[InfluxDB](https://docs.influxdata.com/influxdb/v1.2/)（用来储存实时数据的数据库）
 * Spark从Cassandra获取数据，进行历史数据的批量分析
 * 数据通过Grafana（或其他可视化工具）进行展示
-
-Data Pipeline整体结构如下：
-
-<div align=center><img width="900" height="" src="./image/smack-data-pipeline.png"/></div>
-
-* Spark and Cassandra
-* Akka and Kafka
-* Akka and Cassandra
-* Akka and Spark
-* Kafka and Cassandra
 
 **下方链接提供SMACK涉及技术要点介绍，以便您理解SMACK大数据架构，深入学习各技术建议阅读官方文档**
 
@@ -133,64 +118,79 @@ Data Pipeline整体结构如下：
 
 ## <a name="数据接入"></a>框架说明-数据接入
 
-使用本项目需对日志格式进行调整，典型日志结构如下所示：
+1. 准备你的访问日志，命名为`log.log`
 
-```
-    172.10.36.32 - - [08/Jun/2017:16:36:46 +0800] "GET /winprize/index?id=aafe-uuawef--afewa HTTP/1.1" 200 2215 "-" "-" "172.11.161.17, 172.10.226.13, 10.208.26.230" 938 0.004 172.11.6.9:10055
-    172.10.36.62 - - [08/Jun/2017:16:37:43 +0800] "GET /index HTTP/1.1" 200 56 "-" "-" "172.11.137.181, 172.10.226.14, 10.208.26.226" 947 0.001 172.11.30.144:10055
-    172.10.37.46 - - [08/Jun/2017:16:37:43 +0800] "GET /prize/index HTTP/1.1" 200 56 "-" "-" "172.11.97.82, 172.10.226.11, 10.208.26.234" 952 0.001 172.11.6.9:10055
-    172.10.36.46 - - [08/Jun/2017:16:37:43 +0800] "GET /prize/rank?r=latest HTTP/1.1" 200 54 "-" "-" "172.11.152.137, 172.10.230.13, 10.208.26.241" 1208 0.001 172.11.9.81:10055
-    172.10.37.46 - - [08/Jun/2017:16:36:44 +0800] "GET /prize/rank?r=latest HTTP/1.1" 200 2221 "-" "-" "172.11.97.56, 172.10.226.11, 10.208.26.228" 955 0.003 172.11.14.209:10055
-    172.10.36.67 - - [08/Jun/2017:16:36:44 +0800] "GET /index HTTP/1.1" 500 2299 "-" "-" "172.11.152.140, 172.10.230.191, 10.208.26.243" 1024 0.003 172.11.2.194:10055
-    172.10.36.32 - - [08/Jun/2017:16:36:46 +0800] "GET /winprize/index?id=aafe-uuawef--afewaaa HTTP/1.1" 404 56 "-" "-" "172.11.161.17, 172.10.230.12, 10.208.26.241" 997 0.001 172.11.23.140:10055
-    172.10.36.32 - - [08/Jun/2017:16:37:43 +0800] "GET /prize/index HTTP/1.1" 200 56 "-" "-" "172.10.36.34, 172.10.226.13, 10.208.26.235" 946 0.002 172.11.2.194:10055
-    172.10.36.32 - - [08/Jun/2017:16:36:47 +0800] "GET /prize/index HTTP/1.1" 200 56 "-" "-" "172.11.97.88, 172.10.226.13, 10.208.26.229" 1294 0.002 172.11.23.140:10055
-```
+    使用本项目需对日志格式进行调整，典型日志结构如下所示：
 
-| 字段 | 表示 | 字段 | 表示 |
-| --- | --- | --- | --- |
-| remoteAddr | -----IP地址 | httpReferer | -----refer |
-| remoteUser | -----用户 | httpUserAgent | -----ua |
-| timeLocal | -----服务时间 | httpXForwardedFor | -----refer |
-| request | -----请求地址 | requestLength | -----请求长度 |
-| status | -----请求状态 | upstreamResponseTime | ------响应时间 |
-| bodySize | ----内容大小 | upstreamAddr | -----响应地址  |
+    ```
+        172.10.36.32 - - [08/Jun/2017:16:36:46 +0800] "GET /winprize/index?id=aafe-uuawef--afewa HTTP/1.1" 200 2215 "-" "-" "172.11.161.17, 172.10.226.13, 10.208.26.230" 938 0.004 172.11.6.9:10055
+        172.10.36.62 - - [08/Jun/2017:16:37:43 +0800] "GET /index HTTP/1.1" 200 56 "-" "-" "172.11.137.181, 172.10.226.14, 10.208.26.226" 947 0.001 172.11.30.144:10055
+        172.10.37.46 - - [08/Jun/2017:16:37:43 +0800] "GET /prize/index HTTP/1.1" 200 56 "-" "-" "172.11.97.82, 172.10.226.11, 10.208.26.234" 952 0.001 172.11.6.9:10055
+        172.10.36.46 - - [08/Jun/2017:16:37:43 +0800] "GET /prize/rank?r=latest HTTP/1.1" 200 54 "-" "-" "172.11.152.137, 172.10.230.13, 10.208.26.241" 1208 0.001 172.11.9.81:10055
+        172.10.37.46 - - [08/Jun/2017:16:36:44 +0800] "GET /prize/rank?r=latest HTTP/1.1" 200 2221 "-" "-" "172.11.97.56, 172.10.226.11, 10.208.26.228" 955 0.003 172.11.14.209:10055
+        172.10.36.67 - - [08/Jun/2017:16:36:44 +0800] "GET /index HTTP/1.1" 500 2299 "-" "-" "172.11.152.140, 172.10.230.191, 10.208.26.243" 1024 0.003 172.11.2.194:10055
+        172.10.36.32 - - [08/Jun/2017:16:36:46 +0800] "GET /winprize/index?id=aafe-uuawef--afewaaa HTTP/1.1" 404 56 "-" "-" "172.11.161.17, 172.10.230.12, 10.208.26.241" 997 0.001 172.11.23.140:10055
+        172.10.36.32 - - [08/Jun/2017:16:37:43 +0800] "GET /prize/index HTTP/1.1" 200 56 "-" "-" "172.10.36.34, 172.10.226.13, 10.208.26.235" 946 0.002 172.11.2.194:10055
+        172.10.36.32 - - [08/Jun/2017:16:36:47 +0800] "GET /prize/index HTTP/1.1" 200 56 "-" "-" "172.11.97.88, 172.10.226.13, 10.208.26.229" 1294 0.002 172.11.23.140:10055
+    ```
 
-**[查看业务日志格式示例](./exmaple/log.log)**
+    | 字段 | 表示 | 字段 | 表示 |
+    | --- | --- | --- | --- |
+    | remoteAddr | -----IP地址 | httpReferer | -----refer |
+    | remoteUser | -----用户 | httpUserAgent | -----ua |
+    | timeLocal | -----服务时间 | httpXForwardedFor | -----refer |
+    | request | -----请求地址 | requestLength | -----请求长度 |
+    | status | -----请求状态 | upstreamResponseTime | ------响应时间 |
+    | bodySize | ----内容大小 | upstreamAddr | -----响应地址  |
+
+    **[查看业务日志格式示例](./exmaple/log.log)**
+
+2. 确保数据格式正确，可通过正则表达式验证
+
+    ```
+        reg=`(\d+.\d+.\d+.\d+)\s-\s(.*)\s\[(.+)\]\s\"(.*)\"\s(\d{3,})\s(\d+)\s\"(.*)\"\s\"(.*)\"\s\"(.*?)\"\s(.*)\s(.*)\s(.*)$`
+    ```
+
+3. 修改docker-compose.yml文件，找到`akka-instream`并添加
+
+    ```
+        volumes:
+        - 你本地日志所在目录:/opt/akka/data/
+    ```
 
 ## <a name="数据展示"></a>框架说明-数据展示
 
-本项目本身并未封装数据展示组件，可使用[Grafana](http://docs.grafana.org/)或接入其他可视化工具，步骤如下：
+本项目本身并未封装数据展示组件，可使用**Grafana**或接入其他可视化工具，步骤如下：
 
-1. 安装Grafana
+1. 安装[Grafana](http://docs.grafana.org/)
 
 2. 访问http://127.0.0.1:3000/login（默认账号密码：admin/admin）
 
 3. 添加数据源
 
-<div align=center><img width="900" height="" src="./image/数据展示-1.png"/></div>
+    <div align=center><img width="900" height="" src="./image/display-1.png"/></div>
 
 4. 设置InfluxDB地址及数据库账号密码（admin/admin）
 
-<div align=center><img width="900" height="" src="./image/数据展示-2.png"/></div>
+    <div align=center><img width="900" height="" src="./image/display-2.png"/></div>
 
 5. 创建Dashboard
 
-<div align=center><img width="900" height="" src="./image/数据展示-3.png"/></div>
+    <div align=center><img width="900" height="" src="./image/display-3.png"/></div>
 
 6. 选择Table
 
-<div align=center><img width="900" height="" src="./image/数据展示-4.png"/></div>
+    <div align=center><img width="900" height="" src="./image/display-4.png"/></div>
 
 7. 编辑Table
 
-<div align=center><img width="900" height="" src="./image/数据展示-5.png"/></div>
+    <div align=center><img width="900" height="" src="./image/display-5.png"/></div>
 
 8. 设置查询语句
 
-<div align=center><img width="900" height="" src="./image/数据展示-6.png"/></div>
+    <div align=center><img width="900" height="" src="./image/display-6.png"/></div>
 
-InfluxDB中包含status_real_statics、request_real_statics、nginx_log表，可以分别创建它们视图
+InfluxDB中包含`status_real_statics`、`request_real_statics`、`nginx_log`表，可以分别创建视图
 
 # <a name="更新计划"></a>更新计划
 
