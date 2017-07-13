@@ -16,14 +16,14 @@ services:
     restart: always
 
   influxdb:
-    image: smack/influxdb:1.2.4
+    image: goodraincloudframeworks/smack-influxdb:1.2.4
     restart: always
     ports:
       - 8083:8083
       - 8086:8086
 
   flink:
-    image: smack/flink:1.0
+    image: goodraincloudframeworks/smack-flink:1.0
     restart: always
     links:
       - cassandra:cassandra
@@ -31,21 +31,15 @@ services:
       - kafka:kafka
     entrypoint: /opt/bin/start.sh
 
-  grafana:
-    image: grafana/grafana:latest
-    restart: always
-    ports:
-      - 3000:3000
-
   spark_master:
-    image: smack/spark_master:2.7.3_2.10_2
+    image: goodraincloudframeworks/smack-spark_master:2.7.3_2.10_2
     restart: always
     links:
       - cassandra:cassandra
     entrypoint: /opt/bin/start.sh
 
   spark_slave:
-    image: smack/spark_slave:2.7.3_2.10_2
+    image: goodraincloudframeworks/smack-spark_slave:2.7.3_2.10_2
     restart: always
     links:
       - cassandra:cassandra
@@ -53,7 +47,7 @@ services:
     entrypoint: /opt/bin/start.sh
 
   spark_app:
-    image: smack/spark_app:1.0
+    image: goodraincloudframeworks/smack-spark_app:1.0
     restart: always
     links:
       - cassandra:cassandra
@@ -61,7 +55,7 @@ services:
     entrypoint: /opt/bin/start.sh
     
   akka-instream:
-    image: smack/akka:1.0
+    image: goodraincloudframeworks/smack-akka:1.0
     restart: always
     ports:
       - 9090:9090
@@ -71,7 +65,7 @@ services:
     entrypoint: /opt/bin/start.sh instream
     
   akka-outstream:
-    image: smack/akka:1.0
+    image: goodraincloudframeworks/smack-akka:1.0
     restart: always
     ports:
       - 9091:9091

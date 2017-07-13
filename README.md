@@ -41,17 +41,17 @@
 
 4. 访问路径
 
-    | 访问 | 路径 |
+    | 访问 | 路径 | 方法 | 参数 |
     | --- | --- |
-    | 最近10条日志 | http://DOCKER_HOST:9091/msg/data/nginx_log/test/test/1/10 |
-    | 最新状态统计信息 | http://DOCKER_HOST:9091/msg/data/status_real_statics/test/test/1/10 |
-    | 最新请求统计信息 | http://DOCKER_HOST:9091/msg/data/request_real_statics/test/test/1/10 |
-    | 历史统计信息 | http://127.0.0.1:9090/msg/push/statics |
+    | 最近10条日志 | http://DOCKER_HOST:9091/msg/data/nginx_log/test/test/1/10 | Get |  |
+    | 最新状态统计信息 | http://DOCKER_HOST:9091/msg/data/status_real_statics/test/test/1/10 | Get |  |
+    | 最新请求统计信息 | http://DOCKER_HOST:9091/msg/data/request_real_statics/test/test/1/10 | Get |  |
+    | 历史统计信息 | http://DOCKER_HOST:9090/msg/push/statics | Post | 见5 Post请求参数 |
 
 5. POST请求参数
 
     ```
-    namespace:test
+        namespace:test
         serviceName:test
         start_time:2017-06-01 01:00:18
         end_time:2017-07-22 01:25:10
@@ -164,33 +164,15 @@ SMACK整体结构如下:
 
 1. 安装[Grafana](http://docs.grafana.org/)
 
-2. 访问http://127.0.0.1:3000/login（默认账号密码：admin/admin）
+2. 下载Grafana镜像，docker pull grafana/grafana
 
-3. 添加数据源
+3. 下载grafana初始化数据到/tmp目录并解压,docker启动时需要挂载此目录 ./exmaple/grafana.tar.gz
 
-    <div align=center><img width="900" height="" src="./image/display-1.png"/></div>
+4. docker run -d -v /tmp/grafana:/var/lib/grafana --publish 3000:3000 grafana/grafana
 
-4. 设置InfluxDB地址及数据库账号密码（admin/admin）
+5. 访问http://DOCKER_HOST:3000/login（默认账号密码：admin/admin）
 
-    <div align=center><img width="900" height="" src="./image/display-2.png"/></div>
-
-5. 创建Dashboard
-
-    <div align=center><img width="900" height="" src="./image/display-3.png"/></div>
-
-6. 选择Table
-
-    <div align=center><img width="900" height="" src="./image/display-4.png"/></div>
-
-7. 编辑Table
-
-    <div align=center><img width="900" height="" src="./image/display-5.png"/></div>
-
-8. 设置查询语句
-
-    <div align=center><img width="900" height="" src="./image/display-6.png"/></div>
-
-InfluxDB中包含`status_real_statics`、`request_real_statics`、`nginx_log`表，可以分别创建视图
+6. http://DOCKER_HOST:3000/dashboard/db/data_statics?refresh=5s&orgId=1
 
 # <a name="更新计划"></a>更新计划
 
