@@ -17,10 +17,9 @@
 * [快速部署](#快速部署)
 * [框架说明-业务](#框架说明-业务)
 * [框架说明-组件](#框架说明-组件)
-    * [框架说明-SMACK](#smack)
-    * [框架说明-Data Pipeline](#data-pipeline)
-    * [框架说明-数据接入](#数据接入)
-    * [框架说明-数据展示](#数据展示)
+    * [SMACK](#smack)
+    * [数据接入](#数据接入)
+    * [数据展示](#数据展示)
 * [更新计划](#更新计划)
 * [社群贡献](#社群贡献)
 
@@ -95,7 +94,7 @@ namespace:test
 | Kafka | 消息队列 | InfluxDb | 实时数据统计后汇总的地方 |
 | Flink | 消息流式处理 | Grafana | 整合InfluxDb进行数据展示 |
 
-整体结构如下:
+SMACK整体结构如下:
 
 <div align=center><img width="900" height="" src="./image/smack-architecture.png"/></div>
 
@@ -108,7 +107,17 @@ namespace:test
 * Spark从Cassandra获取数据，进行历史数据的批量分析
 * 数据通过Grafana（或其他可视化工具）进行展示
 
-**Spark、Flink、Kubernetes、Akka、Cassandra、Kafka比较复杂，本项目不做详细解读，仅对基本要点进行介绍以便理解SMACK大数据架构，更多内容建议通过官方文档进行具体学习。**
+Data Pipeline整体结构如下：
+
+<div align=center><img width="900" height="" src="./image/smack-data-pipeline.png"/></div>
+
+* Spark and Cassandra
+* Akka and Kafka
+* Akka and Cassandra
+* Akka and Spark
+* Kafka and Cassandra
+
+**下方链接提供SMACK涉及技术要点介绍，以便您理解SMACK大数据架构，深入学习各技术建议阅读官方文档**
 
 **[批处理引擎-Spark](./READMORE/Spark.md)**
 
@@ -121,20 +130,6 @@ namespace:test
 **[存储-Cassandra](./READMORE/Cassandra.md)**
 
 **[消息队列-Kafka](./READMORE/Kafka.md)**
-
-## <a name="data-pipeline"></a>框架说明-Data Pipeline
-
-Data Pipeline即分布式系统里的数据管道，在大型互联网后端基础架构中扮演着举足轻重的角色。与早期的Sqoop、Flume不同的是，现代的Data Pipeline并非工具概念的技术，而是当作一个服务来运行，放在数据系统中去调度。服务化的Data Pipeline可以让原本复杂的数据传输工作变得优雅起来，这也是DevOps思想的一种延伸。
-
-Data Pipeline整体结构如下：
-
-<div align=center><img width="900" height="" src="./image/smack-data-pipeline.png"/></div>
-
-* Spark and Cassandra
-* Akka and Kafka
-* Akka and Cassandra
-* Akka and Spark
-* Kafka and Cassandra
 
 ## <a name="数据接入"></a>框架说明-数据接入
 
@@ -200,7 +195,7 @@ InfluxDB中包含status_real_statics、request_real_statics、nginx_log表，可
 # <a name="更新计划"></a>更新计划
 
 * `CODE` 完善数据展示 
-* `CODE` 增加集群部署
+* `CODE` 支持集群部署
 
 # <a name="社群贡献"></a>社群贡献
 
