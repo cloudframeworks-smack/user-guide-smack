@@ -2,7 +2,7 @@
 
 Kubernetes是谷歌开源的自动化容器集群管理系统，在Docker基础上为容器化应用提供部署运行、资源调度、服务发现和弹性伸缩等功能特性，无需用户进行复杂的设置工作。轻量、易用、可拓展、自修复是Kubernetes的主要特点，也使得Kubernetes成为目前最为流行的容器编排工具，其架构如下：
 
-<div align=center><img width="900" height="" src="./image/kubernetes-architecture.png"/></div>
+<div align=center><img width="900" height="" src="../image/kubernetes-architecture.png"/></div>
 
 **Master node**：Master node负责Kubernetes集群的管理，编排实际服务运行的节点，是所有管理任务的entry point。
 

@@ -6,7 +6,7 @@
 
 Flink是针对流数据和批数据（流数据的一种极限特例）的分布式处理引擎，采用Java编写，支持Scala、Java、Python的API。Flink的最大特点在于将所有任务当作“流”来处理，支持快速本地迭代及环形迭代任务。相比Spark，Flink并没有将内存完全交给应用层，由此降低了out of memory的发生（Spark在1.5版本后所有DataFrame操作直接作用于[Tungsten](https://community.hortonworks.com/articles/72502/what-is-tungsten-for-apache-spark.html)的二进制数据上）。
 
-<div align=center><img width="900" height="" src="./image/flink-architecture.png"/></div>
+<div align=center><img width="900" height="" src="../image/flink-architecture.png"/></div>
 
 * Client将任务提交给JobManager，JobManager分发任务给TaskManager，TaskManager执行任务并向JobManager汇报任务状态（心跳） 
 * TaskManager之间通过“流”来传递数据，TaskManager内部及TaskManager之间均有数据传递

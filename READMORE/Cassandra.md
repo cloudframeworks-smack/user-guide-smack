@@ -2,7 +2,7 @@
 
 Cassandra是一个分布式的NoSQL数据库，它最大的特点就是完全去中心化，不像MySQL、MongoDB主从备份的模式，也不像HBase、HDFS有不同类型的节点。整个Cassandra集群就是一个由P2P协议组织起来的网络，消除了所有的单点故障。
 
-<div align=center><img width="900" height="" src="./image/cassandra-architecture.png"/></div>
+<div align=center><img width="900" height="" src="../image/cassandra-architecture.png"/></div>
 
 * 数据存储在**node**
 * **Data center**为一组配置在一个集群中用于复制和负载隔离的相关节点

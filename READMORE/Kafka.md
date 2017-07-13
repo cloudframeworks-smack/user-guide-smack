@@ -2,7 +2,7 @@
 
 Kafka发源于LinkedIn，是一款基于发布／订阅的分布式消息系统，于2011年成为Apache的孵化项目，随后于2012年成为Apache的主要项目之一。Kafka使用Scala和Java进行编写，因其快速、可扩展的、高吞吐、可容错的特点而逐渐成为一项广泛使用的技术，适合在messaging、website activity tracking、log aggregation等大规模消息处理场景中使用。
 
-<div align=center><img width="900" height="" src="./image/kafka-architecture.png"/></div>
+<div align=center><img width="900" height="" src="../image/kafka-architecture.png"/></div>
 
 * Kafka集群通常由多个broker（Kafka服务实例）组成以实现负载均衡，这些broker是无状态的，通过ZooKeeper来维护集群状态并完成broker的leader election
 * ZooKeeper用于管理和协调broker。Zookeeper服务通常负责通知producer（生产消息到topic的一方，topic为消息存放的目录）和customer（订阅topic消息消费的一方）在系统存在的broker或是broker失败，而producer和customer根据通知决定并开始与其他broker协调任务执行
