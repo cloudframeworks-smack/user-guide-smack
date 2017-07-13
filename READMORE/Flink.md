@@ -26,7 +26,7 @@ Flink具备以下特性：
 * [DataStream API](https://ci.apache.org/projects/flink/flink-docs-release-1.2/dev/datastream_api.html) & [DataSet API](https://ci.apache.org/projects/flink/flink-docs-release-1.2/dev/batch/index.html)
 * Flink Stack
 
-<div align=center><img width="900" height="" src="./image/flink-stack.png"/></div>
+<div align=center><img width="900" height="" src="../image/flink-stack.png"/></div>
 
 **Read more [Apache Flink Documentation](https://ci.apache.org/projects/flink/flink-docs-release-1.3/)**
 
