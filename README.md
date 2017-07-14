@@ -6,9 +6,9 @@
 
 跟硅谷大数据工程师谈笑风声？Spark、Storm、Pig、Hive……还是Hadoop？大数据技术前沿公司会告诉你——**SMACK** is the new buzzword！SMACK并非单一技术，而是由Spark、Mesos、Akka、Cassandra、Kafka组成的大数据架构，适用于广泛的数据处理场景，可完成低延迟扩展及数据复制、统一管理异构负载集群，并通过单一平台满足不同架构设计和不同应用的需求。（[A Brief History of the SMACK Stack](https://chiefscientist.org/a-brief-history-of-the-smack-stack-f382547e91fe)）
 
-在面对数据源数量急剧增加、数据样本获取难度升高、数据分析时效性差、数据分析投资回报率低等一系列挑战时，SMACK可以解决Hadoop等熟知技术无法解决的诸多问题，特别是物联网化、API化趋势下big data向[fast data](http://www.infoworld.com/article/2608040/big-data/fast-data--the-next-step-after-big-data.html)转变所带来的新需求，以及对于[Data Pipeline](http://www.toadworld.com/platforms/oracle/w/wiki/11576.modern-data-pipeline-architectures)的依赖。
+在面对数据源数量急剧增加、数据样本获取难度升高、数据分析时效性差、数据分析投资回报率低等一系列挑战时，SMACK可以解决Hadoop等熟知技术无法解决的诸多问题，特别是物联网化、API化趋势下big data向[fast data](http://www.infoworld.com/article/2608040/big-data/fast-data--the-next-step-after-big-data.html)转变所带来的新需求，以及大数据处理对于[Data Pipeline](http://www.toadworld.com/platforms/oracle/w/wiki/11576.modern-data-pipeline-architectures)的依赖。
 
-更深入的讲，SMACK可以看作是一种广义上的框架组合思想，其中技术可以增加或被更适合的技术替代，以便我们更好的完成大数据处理。本篇[云框架](README.md)即在引擎层增加了**Flink用于处理实时数据**，并**使用Kubernetes替换Mesos作为容器层**，以某网站数据为例，提供SMACK大数据框架的最佳实践，包括数据接入、SMACK核心、数据分析等一整套框架内容。
+我们可以把SMACK看作是一种**框架组合思想**，其中技术可以增加或被更适合的技术替代，以便我们更好的完成大数据处理。本篇[云框架](README.md)即在引擎层增加了**Flink用于处理实时数据**，**使用Kubernetes替换Mesos作为容器层**，以某网站数据为例，提供SMACK大数据框架的最佳实践，包括SMACK、数据接入、数据展示在内的完整框架。
 
 **在学习和使用SMACK业务和框架之前，建议先行了解Fast Data、Data Pipeline、Lambda Architecture等相关[背景说明](./READMORE/background-knowledge.md)，这三点可以说是SMACK的灵魂，也是选择使用SMACK的重要原因。**
 
@@ -72,13 +72,13 @@
 * 过去某时间段中网站访问UV（以IP地址进行唯一性判断，天／小时／分钟统计）
 * 过去某时间段中请求总数、总时间、最大响应时间、最小响应时间（天／小时／分钟统计）
 
-其业务架构如下图所示：
+业务架构如下图所示：
 
 <div align=center><img width="900" height="" src="./image/business-architecture.png"/></div>
 
 # <a name="框架说明-组件"></a>框架说明-组件
 
-## <a name="smack"></a>框架说明-SMACK
+## <a name="smack"></a>SMACK
 
 本项目中SMACK用到了Spark、Flink、Kubernetes、Akka、Cassandra、Kafka，这一组合在技术成熟度、易用性、组合自由性、自动化程度上极具优势。对于数据的实时处理能力是该组合取代Hadoop的重要原因，在Spark基础上增加Flink而不是完全取代Spark的原因则是，Flink处理数据可达秒级（Spark为分钟级），但Spark在数据批处理成熟度上目前整体要强于Flink。
 
@@ -89,18 +89,20 @@
 | Kafka | 消息队列 | InfluxDb | 实时数据统计后汇总的地方 |
 | Flink | 消息流式处理 | Grafana | 整合InfluxDb进行数据展示 |
 
-SMACK整体结构如下:
+SMACK整体结构如下图所示:
 
 <div align=center><img width="900" height="" src="./image/smack-architecture.png"/></div>
 
 * File System向用户提供底层数据访问机制，即nigix日志存放目录
-* Akka-http从File system加载日志，进行数据增强、数据再处理，并向外部访问提供rest api接口
+* Akka-http从File system加载日志，进行数据增强、数据再处理，并向外部访问提供REST API接口
 * 数据通过Akka消息队列处理后，由Kafka执行消息传输
 * Flink利用窗口CP机制对数据进行流式处理及实时状态统计
 * 经过Flink处理的非统计信息将被存储至Cassandra
 * 经过Flink处理的统计信息将被存储至[InfluxDB](https://docs.influxdata.com/influxdb/v1.2/)（用来储存实时数据的数据库）
 * Spark从Cassandra获取数据，进行历史数据的批量分析
 * 数据通过Grafana（或其他可视化工具）进行展示
+
+[查看SMACK源码](https://github.com/cloudframeworks-smack/user-guide-smack/tree/master/source)
 
 **SMACK涉及技术要点概览**
 
@@ -116,11 +118,11 @@ SMACK整体结构如下:
 
 [消息队列-Kafka](./READMORE/Kafka.md)
 
-## <a name="数据接入"></a>框架说明-数据接入
+## <a name="数据接入"></a>数据接入
 
-1. 准备你的访问日志，命名为`log.log`
+1. 准备访问日志并命名为`log.log`
 
-    使用本项目需对日志格式进行调整，典型日志结构如下所示：
+    **此处注意**，使用本项目需对日志格式进行调整，典型日志结构如下所示：
 
     ```
         172.10.36.32 - - [08/Jun/2017:16:36:46 +0800] "GET /winprize/index?id=aafe-uuawef--afewa HTTP/1.1" 200 2215 "-" "-" "172.11.161.17, 172.10.226.13, 10.208.26.230" 938 0.004 172.11.6.9:10055
@@ -143,7 +145,7 @@ SMACK整体结构如下:
     | status | -----请求状态 | upstreamResponseTime | ------响应时间 |
     | bodySize | ----内容大小 | upstreamAddr | -----响应地址  |
 
-    **[查看实例日志](./exmaple/log.log)**
+    [查看实例日志](./exmaple/log.log)
 
 2. 确保数据格式正确，可通过正则表达式验证
 
@@ -158,31 +160,31 @@ SMACK整体结构如下:
         - 你本地日志所在目录:/opt/akka/data/
     ```
 
-## <a name="数据展示"></a>框架说明-数据展示
+## <a name="数据展示"></a>数据展示
 
-本项目本身并未封装数据展示组件，可使用**Grafana**或接入其他可视化工具，步骤如下：
+本项目未封装数据展示组件，可使用[Grafana](http://docs.grafana.org/)或接入其他可视化工具。
 
-1. 安装[Grafana](http://docs.grafana.org/)
+使用Grafana步骤如下：
 
-2. 下载Grafana镜像
+1. 下载Grafana镜像
 
     ```
     docker pull grafana/grafana`
     ```
 
-3. 下载Grafana初始化数据（[实例日志](./exmaple/log.log)）到`/tmp`目录并解压，docker启动时需挂载`./exmaple/grafana.tar.gz`目录
+2. 下载Grafana初始化数据（[实例日志](./exmaple/log.log)）到`/tmp`目录并解压，docker启动时需挂载`./exmaple/grafana.tar.gz`目录
 
-4. 执行命令
+3. 执行命令
 
     ```
     docker run -d -v /tmp/grafana:/var/lib/grafana --publish 3000:3000 grafana/grafana
     ```
 
-5. 登陆访问数据展示界面
+4. 登陆访问数据展示界面
 
     http://DOCKER_HOST:3000/login           ---（默认账号密码：admin/admin）
 
-6. 或直接访问数据展示界面
+5. 或直接访问数据展示界面
 
     http://DOCKER_HOST:3000/dashboard/db/data_statics?refresh=5s&orgId=1
 
