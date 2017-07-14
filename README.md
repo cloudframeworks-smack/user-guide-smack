@@ -46,7 +46,7 @@
     | 最近10条日志 | http://DOCKER_HOST:9091/msg/data/nginx_log/test/test/1/10 | Get |  |
     | 最新状态统计信息 | http://DOCKER_HOST:9091/msg/data/status_real_statics/test/test/1/10 | Get |  |
     | 最新请求统计信息 | http://DOCKER_HOST:9091/msg/data/request_real_statics/test/test/1/10 | Get |  |
-    | 历史统计信息 | http://DOCKER_HOST:9090/msg/push/statics | Post | 见Post请求参数 |
+    | 历史统计信息 | http://DOCKER_HOST:9090/msg/push/statics | Post | 见下方Post请求参数 |
 
 5. POST请求参数
 
@@ -105,10 +105,15 @@ SMACK整体结构如下:
 **SMACK涉及技术要点概览**
 
 [批处理引擎-Spark](./READMORE/Spark.md)
+
 [实时处理引擎-Flink](./READMORE/Flink.md)
+
 [容器-Kubernetes](./READMORE/Kubernetes.md)
+
 [模型-Akka](./READMORE/Akka.md)
+
 [存储-Cassandra](./READMORE/Cassandra.md)
+
 [消息队列-Kafka](./READMORE/Kafka.md)
 
 ## <a name="数据接入"></a>框架说明-数据接入
