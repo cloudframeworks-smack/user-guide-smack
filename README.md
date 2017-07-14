@@ -41,12 +41,12 @@
 
 4. 访问路径
 
-    | 访问 | 路径 | 方法 | 参数 |
+    | 访问 | 路径 | 方法  | 参数 |
     | --- | --- | --- | --- |
-    | 最近10条日志 | http://DOCKER_HOST:9091/msg/data/nginx_log/test/test/1/10 | Get |  |
-    | 最新状态统计信息 | http://DOCKER_HOST:9091/msg/data/status_real_statics/test/test/1/10 | Get |  |
-    | 最新请求统计信息 | http://DOCKER_HOST:9091/msg/data/request_real_statics/test/test/1/10 | Get |  |
-    | 历史统计信息 | http://DOCKER_HOST:9090/msg/push/statics | Post | 见下方Post请求参数 |
+    | 最近10条日志 | http://DOCKER_HOST:9091/msg/data/nginx_log/test/test/1/10 | GET |  |
+    | 最新状态统计信息 | http://DOCKER_HOST:9091/msg/data/status_real_statics/test/test/1/10 | GET |  |
+    | 最新请求统计信息 | http://DOCKER_HOST:9091/msg/data/request_real_statics/test/test/1/10 | GET |  |
+    | 历史统计信息 | http://DOCKER_HOST:9090/msg/push/statics | POST | 见下方 |
 
 5. POST请求参数
 
