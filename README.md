@@ -42,11 +42,11 @@
 4. 访问路径
 
     | 访问 | 路径 | 方法 | 参数 |
-    | --- | --- |
+    | --- | --- | --- | --- |
     | 最近10条日志 | http://DOCKER_HOST:9091/msg/data/nginx_log/test/test/1/10 | Get |  |
     | 最新状态统计信息 | http://DOCKER_HOST:9091/msg/data/status_real_statics/test/test/1/10 | Get |  |
     | 最新请求统计信息 | http://DOCKER_HOST:9091/msg/data/request_real_statics/test/test/1/10 | Get |  |
-    | 历史统计信息 | http://DOCKER_HOST:9090/msg/push/statics | Post | 见5 Post请求参数 |
+    | 历史统计信息 | http://DOCKER_HOST:9090/msg/push/statics | Post | 见Post请求参数 |
 
 5. POST请求参数
 
@@ -102,19 +102,14 @@ SMACK整体结构如下:
 * Spark从Cassandra获取数据，进行历史数据的批量分析
 * 数据通过Grafana（或其他可视化工具）进行展示
 
-**下方链接提供SMACK涉及技术要点介绍，以便您理解SMACK大数据架构，深入学习各技术建议阅读官方文档**
+**SMACK涉及技术要点概览**
 
-**[批处理引擎-Spark](./READMORE/Spark.md)**
-
-**[实时处理引擎-Flink](./READMORE/Flink.md)**
-
-**[容器-Kubernetes](./READMORE/Kubernetes.md)**
-
-**[模型-Akka](./READMORE/Akka.md)**
-
-**[存储-Cassandra](./READMORE/Cassandra.md)**
-
-**[消息队列-Kafka](./READMORE/Kafka.md)**
+[批处理引擎-Spark](./READMORE/Spark.md)
+[实时处理引擎-Flink](./READMORE/Flink.md)
+[容器-Kubernetes](./READMORE/Kubernetes.md)
+[模型-Akka](./READMORE/Akka.md)
+[存储-Cassandra](./READMORE/Cassandra.md)
+[消息队列-Kafka](./READMORE/Kafka.md)
 
 ## <a name="数据接入"></a>框架说明-数据接入
 
@@ -143,7 +138,7 @@ SMACK整体结构如下:
     | status | -----请求状态 | upstreamResponseTime | ------响应时间 |
     | bodySize | ----内容大小 | upstreamAddr | -----响应地址  |
 
-    **[查看业务日志格式示例](./exmaple/log.log)**
+    **[查看实例日志](./exmaple/log.log)**
 
 2. 确保数据格式正确，可通过正则表达式验证
 
@@ -164,20 +159,32 @@ SMACK整体结构如下:
 
 1. 安装[Grafana](http://docs.grafana.org/)
 
-2. 下载Grafana镜像，docker pull grafana/grafana
+2. 下载Grafana镜像
 
-3. 下载grafana初始化数据到/tmp目录并解压,docker启动时需要挂载此目录 ./exmaple/grafana.tar.gz
+    ```
+    docker pull grafana/grafana`
+    ```
 
-4. docker run -d -v /tmp/grafana:/var/lib/grafana --publish 3000:3000 grafana/grafana
+3. 下载Grafana初始化数据（[实例日志](./exmaple/log.log)）到`/tmp`目录并解压，docker启动时需挂载`./exmaple/grafana.tar.gz`目录
 
-5. 访问http://DOCKER_HOST:3000/login（默认账号密码：admin/admin）
+4. 执行命令
 
-6. http://DOCKER_HOST:3000/dashboard/db/data_statics?refresh=5s&orgId=1
+    ```
+    docker run -d -v /tmp/grafana:/var/lib/grafana --publish 3000:3000 grafana/grafana
+    ```
+
+5. 登陆访问数据展示界面
+
+    http://DOCKER_HOST:3000/login           ---（默认账号密码：admin/admin）
+
+6. 或直接访问数据展示界面
+
+    http://DOCKER_HOST:3000/dashboard/db/data_statics?refresh=5s&orgId=1
 
 # <a name="更新计划"></a>更新计划
 
-* `CODE` 完善数据展示 
-* `CODE` 支持集群部署
+* `CODE` 完善数据展示界面 
+* `CODE` 完善集群部署支持
 
 # <a name="社群贡献"></a>社群贡献
 
