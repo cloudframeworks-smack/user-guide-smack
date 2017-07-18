@@ -145,7 +145,7 @@ SMACK整体结构如下图所示:
     | status | -----请求状态 | upstreamResponseTime | ------响应时间 |
     | bodySize | ----内容大小 | upstreamAddr | -----响应地址  |
 
-    [查看实例日志](./exmaple/log.log)
+    [查看实例日志](./example/log.log)
 
 2. 确保数据格式正确，可通过正则表达式验证
 
@@ -169,12 +169,12 @@ SMACK整体结构如下图所示:
 1. 下载Grafana镜像
 
     ```
-    docker pull grafana/grafana`
+    docker pull grafana/grafana
     ```
 
-2. 下载Grafana初始化数据（[实例日志](./exmaple/log.log)）到`/tmp`目录并解压，docker启动时需挂载`./exmaple/grafana.tar.gz`目录
+2. 下载Grafana初始化数据（[实例日志](./example)）到`/tmp`目录
 
-3. 执行命令
+3. 执行命令（docker启动时挂载`./exmaple/grafana.tar.gz`目录）
 
     ```
     docker run -d -v /tmp/grafana:/var/lib/grafana --publish 3000:3000 grafana/grafana
