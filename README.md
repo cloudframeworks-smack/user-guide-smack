@@ -174,9 +174,9 @@ SMACK整体结构如下图所示:
     docker pull grafana/grafana
     ```
 
-2. 下载Grafana初始化数据（[实例日志](./example)）到`/tmp`目录
+2. 下载并解压Grafana初始化数据（[实例日志](./example)）到`/tmp`目录（该目录可根据业务实际情况进行自定义，注意相应修改下一步骤中的挂载目录`/tmp/grafana:/var/lib/grafana`）
 
-3. 执行命令（docker启动时挂载`./exmaple/grafana.tar.gz`目录）
+3. 执行命令
 
     ```
     docker run -d -v /tmp/grafana:/var/lib/grafana --publish 3000:3000 grafana/grafana
