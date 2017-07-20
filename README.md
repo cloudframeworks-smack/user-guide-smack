@@ -25,7 +25,7 @@
 
 # <a name="快速部署"></a>快速部署
 
-1. [准备Docker环境](https://github.com/cloudframeworks-smack/user-guide-smack/blob/master/READMORE/install%20docker.md)
+1. [准备Docker环境](https://github.com/cloudframeworks-smack/user-guide-smack/blob/master/READMORE/install-docker.md)
 
 2. 克隆完整代码
 
