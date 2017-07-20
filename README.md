@@ -25,9 +25,9 @@
 
 # <a name="快速部署"></a>快速部署
 
-为Docker分配足够资源，最小环境要求：4 CPUs & 4GB Memory
+**最小环境要求：4 CPUs & 8GB Memory**
 
-1. [准备Docker环境](https://github.com/cloudframeworks-smack/user-guide-smack/blob/master/READMORE/install-docker.md)
+1. [准备Docker环境](https://github.com/cloudframeworks-smack/user-guide-smack/blob/master/READMORE/install-docker.md)，并为Docker分配至少`4 CPUs` & `8GB Memory`
 
 2. 克隆完整代码
 
