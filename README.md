@@ -1,6 +1,6 @@
 # [云框架]SMACK大数据架构
 
-![](https://img.shields.io/badge/Release-v0.1-green.svg)
+![](https://img.shields.io/badge/Release-v1.0-green.svg)
 [![](https://img.shields.io/badge/Producer-elvis2002-orange.svg)](CONTRIBUTORS.md)
 ![](https://img.shields.io/badge/License-Apache_2.0-blue.svg)
 
