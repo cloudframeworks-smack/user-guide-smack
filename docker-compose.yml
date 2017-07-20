@@ -55,7 +55,7 @@ services:
     entrypoint: /opt/bin/start.sh
     
   akka-instream:
-    image: goodraincloudframeworks/smack-akka:1.1
+    image: goodraincloudframeworks/smack-akka:1.0
     restart: always
     ports:
       - 9090:9090
@@ -65,7 +65,7 @@ services:
     entrypoint: /opt/bin/start.sh instream
     
   akka-outstream:
-    image: goodraincloudframeworks/smack-akka:1.1
+    image: goodraincloudframeworks/smack-akka:1.0
     restart: always
     ports:
       - 9091:9091
