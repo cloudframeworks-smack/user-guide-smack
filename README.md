@@ -190,6 +190,8 @@ SMACK整体结构如下图所示:
 
     http://DOCKER_HOST:3000/dashboard/db/data_statics?refresh=5s&orgId=1
 
+<div align=center><img width="900" height="" src="./image/grafana-data-statics.png"/></div>
+
 # <a name="更新计划"></a>更新计划
 
 * `CODE` 完善数据展示界面 
