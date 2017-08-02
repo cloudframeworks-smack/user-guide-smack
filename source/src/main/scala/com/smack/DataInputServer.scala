@@ -23,6 +23,5 @@ object DataInputServer extends App {
     
     //define main actor
     system.actorOf(Props(new DataInputActor(config)), "datainput")
-    
 	log.info("Starting Data Input Server Ok!")
 }
