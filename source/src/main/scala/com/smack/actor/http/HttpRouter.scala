@@ -98,10 +98,10 @@ trait HttpRouter extends HttpService {
         <p>Defined resources:</p>
         <ul>
           <li><a href="/stats">/stats</a></li>
-          <li><a href="">/msg/data/$tablename/$namespace/$serviceName/$start/$size</a></li>
+          <!--<li><a href="">/msg/data/$tablename/$namespace/$serviceName/$start/$size</a></li>
           <li><a href="">/msg/push/data</a></li>
           <li><a href="">/msg/push/cmd</a></li>
-					<li><a href="">/msg/push/statics</a></li>
+		  <li><a href="">/msg/push/statics</a></li>-->
         </ul>
       </body>
     </html>

@@ -26,7 +26,7 @@ class InputWorker(config: Config) extends Actor with ActorLogging {
 				val msg = evt.namespace + config.getString("common.sec") + evt.serverName + config.getString("common.sec") + evt.msg
 				val message = new ProducerRecord[Array[Byte], String](config.getString("kafka_producer.topic"), msg)
 				kafkaProducer.send(message)
-				log.info(message.toString())
+				//log.info(message.toString())
 			} catch {
 				case t: Throwable => log.info(t.getLocalizedMessage)
 			}
