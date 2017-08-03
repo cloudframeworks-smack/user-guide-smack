@@ -4,11 +4,27 @@
 [![](https://img.shields.io/badge/Producer-elvis2002-orange.svg)](CONTRIBUTORS.md)
 ![](https://img.shields.io/badge/License-Apache_2.0-blue.svg)
 
-跟硅谷大数据工程师谈笑风声？Spark、Storm、Pig、Hive……还是Hadoop？大数据技术前沿公司会告诉你——**SMACK** is the new buzzword！SMACK并非单一技术，而是由Spark、Mesos、Akka、Cassandra、Kafka组成的大数据架构，适用于广泛的数据处理场景，可完成低延迟扩展及数据复制、统一管理异构负载集群，并通过单一平台满足不同架构设计和不同应用的需求。（[A Brief History of the SMACK Stack](https://chiefscientist.org/a-brief-history-of-the-smack-stack-f382547e91fe)）
+SMACK并非单一技术，而是由Spark、Mesos、Akka、Cassandra、Kafka组成的大数据架构，适用于广泛的数据处理场景，可完成低延迟扩展及数据复制、统一管理异构负载集群，并通过单一平台满足不同架构设计和不同应用的需求。（[A Brief History of the SMACK Stack](https://chiefscientist.org/a-brief-history-of-the-smack-stack-f382547e91fe)）主要特点如下：
+
+|  |  |
+| --- | --- |
+| 架构灵活多变 | 每个组件都可以集群化部署；组件之间可以自由组合；可随意对架构进行无中断升级 |
+| 支持数据管道 | 数据以数据流的形式进行流转；上一个组件的输出等于下一个组件的输入 |
+| 多种模式数据处理 | 支持秒级流式处理；支持批处理 |
+| 多种方式数据接入 | 支持文件、消息、http请求等方式的数据采集 |
+| 系统可交互 | 可以与系统进行实时交互，提供REST API |
+| 部署简单 | 以二进制方式部署；以容器化方式部署 |
 
 在面对数据源数量急剧增加、数据样本获取难度升高、数据分析时效性差、数据分析投资回报率低等一系列挑战时，SMACK可以解决Hadoop等熟知技术无法解决的诸多问题，特别是物联网化、API化趋势下big data向[fast data](http://www.infoworld.com/article/2608040/big-data/fast-data--the-next-step-after-big-data.html)转变所带来的新需求，以及大数据处理对于[Data Pipeline](http://www.toadworld.com/platforms/oracle/w/wiki/11576.modern-data-pipeline-architectures)的依赖。
 
-我们可以把SMACK看作是一种**框架组合思想**，其中技术可以增加或被更适合的技术替代，以便我们更好的完成大数据处理。本篇[云框架](README.md)即在引擎层增加了**Flink用于处理实时数据**，**使用Kubernetes替换Mesos作为容器层**，以某网站数据为例，提供SMACK大数据框架的最佳实践，包括SMACK、数据接入、数据展示在内的完整框架。
+我们可以把SMACK看作是一种**框架组合思想**，其中技术可以增加或被更适合的技术替代，以便我们更好的完成大数据处理。本篇[云框架](README.md)即在引擎层增加了**Flink用于处理实时数据**，**使用Kubernetes替换Mesos作为容器层**，以某网站数据为例，提供SMACK大数据框架的最佳实践，包括SMACK、数据接入、数据展示在内的完整框架，适合以下应用场景：
+
+* 实时计算
+* 时间窗口分析
+* 应用日志分析
+* 项目风控管理
+* 智能预测
+* 实时推荐
 
 **在学习和使用SMACK业务和框架之前，建议先行了解Fast Data、Data Pipeline、Lambda Architecture等相关[背景说明](./READMORE/background-knowledge.md)，这三点可以说是SMACK的灵魂，也是选择使用SMACK的重要原因。**
 
