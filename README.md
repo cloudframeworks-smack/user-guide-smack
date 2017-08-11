@@ -31,6 +31,8 @@ SMACK并非单一技术，而是由Spark、Mesos、Akka、Cassandra、Kafka组�
 # 内容概览
 
 * [快速部署](#快速部署)
+    * [一键部署](#一键部署)
+    * [本地部署](#本地部署) 
 * [框架说明-业务](#框架说明-业务)
 * [框架说明-组件](#框架说明-组件)
     * [SMACK](#smack)
@@ -40,6 +42,12 @@ SMACK并非单一技术，而是由Spark、Mesos、Akka、Cassandra、Kafka组�
 * [社群贡献](#社群贡献)
 
 # <a name="快速部署"></a>快速部署
+
+## <a name="一键部署"></a>一键部署
+
+[一键部署至好雨云帮](http://app.goodrain.com/group/detail/28/)
+
+## <a name="本地部署"></a>本地部署
 
 **最小环境要求：4 CPUs & 8GB Memory**
 
