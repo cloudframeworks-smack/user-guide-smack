@@ -1,0 +1,120 @@
+version: '2'
+services:
+  zookeeper:
+    # 512M
+    image: zookeeper:latest
+    restart: always
+    ports:
+      - 2181:2181
+      - 2888:2888
+      - 3888:3888
+
+  kafka:
+    # 1G
+    image: goodraincloudframeworks/kafka:latest
+    restart: always
+    links:
+      - zookeeper:zookeeper
+    entrypoint: /opt/bin/start.sh
+    ports:
+      - 9092:9092
+
+  cassandra:
+    # 4G
+    image: cassandra:latest
+    environment:
+      - JVM_OPTS=-Xms2G -Xmx4G
+    restart: always
+    ports:
+      - 9042:9042
+
+  influxdb:
+    # 512M
+    image: goodraincloudframeworks/smack-influxdb:1.2.4
+    restart: always
+    ports:
+      - 8083:8083
+      - 8086:8086
+
+  flink:
+    # 4G
+    image: goodraincloudframeworks/smack-flink:1.0
+    restart: always
+    links:
+      - cassandra:cassandra
+      - influxdb:influxdb
+      - kafka:kafka
+    entrypoint: /opt/bin/start.sh
+    ports:
+      - 6123:6123
+      - 8081:8081
+      - 45439:45439
+      - 40323:40323
+
+  spark_master:
+    # 2G
+    image: singularities/spark
+    restart: always
+    environment:
+      - SPARK_WORKER_CORES=1
+      - SPARK_WORKER_MEMORY=2G
+    entrypoint: start-spark master
+    #expose: 8080
+    ports:
+      - 8080:8080
+      - 7077:7077
+
+  spark_slave:
+    # 2G
+    image: singularities/spark
+    restart: always
+    links:
+      - spark_master
+    environment:
+      - SPARK_WORKER_CORES=1
+      - SPARK_WORKER_MEMORY=2G    
+    entrypoint: start-spark worker 127.0.0.1
+
+  spark_app:
+    # 2G
+    image: goodraincloudframeworks/smack-spark_app:1.0
+    restart: always
+    links:
+      - cassandra:cassandra
+      - spark_master:spark_master
+    entrypoint: /opt/bin/start.sh
+    ports:
+      - 4040:4040
+
+  akka-instream:
+    # 2G
+    image: goodraincloudframeworks/smack-akka:1.0
+    restart: always
+    ports:
+      - 9090:9090
+    #expose: 9090
+    links:
+      - kafka:kafka
+      - spark_app:rpc
+    entrypoint: /opt/bin/start.sh instream
+
+  akka-outstream:
+    # 2G
+    image: goodraincloudframeworks/smack-akka:1.0
+    restart: always
+    ports:
+      - 9091:9091
+    #expose: 9091
+    links:
+      - cassandra:cassandra
+    entrypoint: /opt/bin/start.sh outstream
+
+  grafana:
+    # 512M
+    image: grafana/grafana
+    restart: always
+    ports:
+      - 3000:3000
+    #expose: 3000
+    links:
+      - influxdb:influxdb
